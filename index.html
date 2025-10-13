@@ -3,51 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Loop 10000</title>
+  <title>Canvas Pattern 10000</title>
   <style>
-    * { margin: 0; padding: 0; }
-    body { display: flex; flex-wrap: wrap; }
-    .pattern { display: inline-block; margin: 0px; }
-    .row { display: flex; }
-    .cell {
-      width: 1px;
-      height: 1px;
-      margin: 1px;
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
     }
   </style>
 </head>
 <body>
-  <script>
-    // --- 1つの模様を生成する関数 ---
-    function createPattern() {
-      const pattern = document.createElement('div');
-      pattern.className = 'pattern';
+  <canvas id="canvas"></canvas>
 
-      // 10x10 のパターン（9赤 + 1青の行を9行、最後は全青）
-      for (let y = 0; y < 10; y++) {
-        const row = document.createElement('div');
-        row.className = 'row';
-        for (let x = 0; x < 10; x++) {
-          const cell = document.createElement('div');
-          cell.className = 'cell';
-          if (y === 9 || x === 9) {
-            cell.style.backgroundColor = 'blue';
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // 1模様あたりのサイズ
+    const cellSize = 3; // 1px＋マージン代わり
+    const patternSize = 10 * cellSize;
+
+    // 表示サイズを自動調整
+    const cols = 100; // 横に並べる数
+    const rows = 100; // 縦に並べる数（合計100x100=10000）
+    canvas.width = cols * patternSize;
+    canvas.height = rows * patternSize;
+
+    function drawPattern(x, y) {
+      for (let j = 0; j < 10; j++) {
+        for (let i = 0; i < 10; i++) {
+          if (j === 9 || i === 9) {
+            ctx.fillStyle = "blue";
           } else {
-            cell.style.backgroundColor = 'red';
+            ctx.fillStyle = "red";
           }
-          row.appendChild(cell);
+          ctx.fillRect(
+            x + i * cellSize,
+            y + j * cellSize,
+            cellSize - 0.5,
+            cellSize - 0.5
+          );
         }
-        pattern.appendChild(row);
       }
-      return pattern;
     }
 
-    // --- 10000個ループで作成 ---
-    const container = document.body;
-    const total = 10000;
-
-    for (let i = 0; i < total; i++) {
-      container.appendChild(createPattern());
+    // 10000模様を描画
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        drawPattern(col * patternSize, row * patternSize);
+      }
     }
   </script>
 </body>
